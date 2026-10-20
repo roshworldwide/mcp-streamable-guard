@@ -9,17 +9,17 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "source": "./src/index.ts",
+      "homepulse-source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./policy": {
-      "source": "./src/policy.ts",
+      "homepulse-source": "./src/policy.ts",
       "types": "./dist/policy.d.ts",
       "default": "./dist/policy.js"
     },
     "./spec": {
-      "source": "./src/spec.ts",
+      "homepulse-source": "./src/spec.ts",
       "types": "./dist/spec.d.ts",
       "default": "./dist/spec.js"
     }
