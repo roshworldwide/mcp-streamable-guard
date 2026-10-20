@@ -4,7 +4,14 @@
   "description": "A deterministic guard for physical MCP tools: source tagging, signed one-time passes, and a pure allow/block policy tested on every input combination.",
   "license": "MIT",
   "type": "module",
-  "keywords": ["mcp", "model-context-protocol", "prompt-injection", "guard", "smart-home", "alexa"],
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "prompt-injection",
+    "guard",
+    "smart-home",
+    "alexa"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -22,9 +29,19 @@
       "homepulse-source": "./src/spec.ts",
       "types": "./dist/spec.d.ts",
       "default": "./dist/spec.js"
+    },
+    "./inputs": {
+      "homepulse-source": "./src/inputs.ts",
+      "types": "./dist/inputs.d.ts",
+      "default": "./dist/inputs.js"
     }
   },
-  "files": ["dist", "src", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run --root ../.. packages/guard"
