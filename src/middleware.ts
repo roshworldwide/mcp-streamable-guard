@@ -82,6 +82,7 @@ export function createGuard<A = Record<string, unknown>>(adapter: GuardAdapter<A
     const t0 = performance.now();
     let wait = 0;
     let approvalRequested = false;
+    let approvalError: string | null = null;
 
     let res = await adapter.resolve(ctx);
     let result = decide(res.inputs, res.messages);
@@ -89,10 +90,17 @@ export function createGuard<A = Record<string, unknown>>(adapter: GuardAdapter<A
     if (!result.allow && adapter.requestApproval && approvalCouldHelp(res.inputs)) {
       approvalRequested = true;
       const w0 = performance.now();
-      await adapter.requestApproval(ctx, result, res);
+      try {
+        await adapter.requestApproval(ctx, result, res);
+      } catch (err) {
+        // Asking a human is optional; if it fails there is no approval, whatever state it left behind.
+        approvalError = err instanceof Error ? err.message : String(err);
+      }
       wait += performance.now() - w0;
-      res = await adapter.resolve(ctx);
-      result = decide(res.inputs, res.messages);
+      if (!approvalError) {
+        res = await adapter.resolve(ctx);
+        result = decide(res.inputs, res.messages);
+      }
     }
 
     if (result.allow && adapter.commit) {
@@ -107,7 +115,13 @@ export function createGuard<A = Record<string, unknown>>(adapter: GuardAdapter<A
       }
     }
 
-    const extras = adapter.explain ? await adapter.explain(ctx) : {};
+    let extras: { echoed_outside_text?: string; notes?: string[] } = {};
+    try {
+      extras = adapter.explain ? await adapter.explain(ctx) : {};
+    } catch {
+      // Explanations never affect the decision; a failure just means no explanation.
+    }
+    if (approvalError) extras = { ...extras, notes: [...(extras.notes ?? []), "asking the family failed, so no approval was given"] };
     const latency = performance.now() - t0 - wait;
 
     const decision: GuardDecision<A> = {
