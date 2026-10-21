@@ -45,8 +45,8 @@ export interface GuardAdapter<A = Record<string, unknown>> {
   commit?(ctx: GuardContext<A>, allowed: PolicyResult): Promise<boolean> | boolean;
   /** Explanation-only extras for the dashboard (echoed outside text). Never affects the decision. */
   explain?(ctx: GuardContext<A>): Promise<{ echoed_outside_text?: string; notes?: string[] }> | { echoed_outside_text?: string; notes?: string[] };
-  /** Append the decision to the audit log. */
-  record?(decision: GuardDecision<A>): void | Promise<void>;
+  /** Append the decision to the audit log. `ctx` carries the request's `extra`. */
+  record?(decision: GuardDecision<A>, ctx: GuardContext<A>): void | Promise<void>;
 }
 
 export interface GuardDecision<A = Record<string, unknown>> {
@@ -139,7 +139,7 @@ export function createGuard<A = Record<string, unknown>>(adapter: GuardAdapter<A
       latency_ms: Math.round(latency * 1000) / 1000,
       wait_ms: Math.round(wait),
     };
-    await adapter.record?.(decision);
+    await adapter.record?.(decision, ctx);
     return decision;
   }
 

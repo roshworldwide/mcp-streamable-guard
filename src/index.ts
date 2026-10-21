@@ -6,3 +6,4 @@ export * from "./passes.js";
 export * from "./provenance.js";
 export * from "./audit.js";
 export * from "./middleware.js";
+export * from "./approvals.js";

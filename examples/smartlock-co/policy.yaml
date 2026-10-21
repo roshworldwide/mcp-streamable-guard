@@ -1,0 +1,10 @@
+# SmartLock Co, guarded. Tools not listed under physical pass straight through.
+physical:
+  unlock_door: { door_arg: door_id }   # the pass must be for the door the call names
+approvers: [homeowner, caregiver]      # whose phones are asked to approve (MCP elicitation)
+timezone: America/Los_Angeles
+night: "22:00-06:00"                   # passes work at night only if issued with allow_at_night
+presence: ring                         # someone must be at the door: a Ring-signed bell press in the last 120 s
+rate: { max: 5, minutes: 10 }          # door requests per caller
+approval_seconds: 60                   # an approval counts for one request, for 60 seconds
+max_wrong_codes: 5                     # five wrong codes revoke a pass

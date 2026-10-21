@@ -1,16 +1,17 @@
 {
   "name": "mcp-streamable-guard",
   "version": "0.1.0",
-  "description": "A deterministic guard for physical MCP tools: source tagging, signed one-time passes, and a pure allow/block policy tested on every input combination.",
+  "description": "A deterministic guard for physical MCP tools: source tagging, signed one-time passes, approvals by elicitation, a pure allow/block policy tested on every input combination, and a proxy that puts it in front of any MCP server.",
   "license": "MIT",
   "type": "module",
   "keywords": [
+    "alexa",
+    "guard",
     "mcp",
     "model-context-protocol",
     "prompt-injection",
-    "guard",
-    "smart-home",
-    "alexa"
+    "proxy",
+    "smart-home"
   ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -34,11 +35,22 @@
       "homepulse-source": "./src/inputs.ts",
       "types": "./dist/inputs.d.ts",
       "default": "./dist/inputs.js"
+    },
+    "./approvals": {
+      "homepulse-source": "./src/approvals.ts",
+      "types": "./dist/approvals.d.ts",
+      "default": "./dist/approvals.js"
+    },
+    "./proxy": {
+      "homepulse-source": "./src/proxy/index.ts",
+      "types": "./dist/proxy/index.d.ts",
+      "default": "./dist/proxy/index.js"
     }
   },
   "files": [
     "dist",
     "src",
+    "examples",
     "README.md",
     "LICENSE"
   ],
@@ -48,5 +60,17 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "bin": {
+    "mcp-streamable-guard": "./dist/cli.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.32.1",
+    "express": "^5.3.0",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6"
   }
 }
