@@ -84,7 +84,8 @@ export function doorFor(policy: GuardPolicy, tool: string, args: Record<string, 
   if (!rule) return null;
   if (rule.door) return rule.door;
   const v = args[rule.door_arg!];
-  return typeof v === "string" && v.length > 0 && v.length <= 40 ? v : "";
+  // A plain name only: the door name is shown on the owner's phone, so it must not carry a message.
+  return typeof v === "string" && /^[A-Za-z0-9_-]{1,40}$/.test(v) ? v : "";
 }
 
 /** Local minutes since midnight in `tz`. */

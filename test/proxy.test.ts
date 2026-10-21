@@ -264,6 +264,36 @@ describe("guard proxy: the door only moves with a credential", () => {
     expect(unlockCalls()).toEqual([{ name: "open_garage", args: {} }]);
   });
 
+  test("a door name can't smuggle a message onto the owner's phone", async () => {
+    await start();
+    const agent = await client("agent");
+    const asked: string[] = [];
+    await client("homeowner", (msg) => {
+      asked.push(msg);
+      return false;
+    });
+    await bell();
+    const r = await call(agent, "unlock_door", { door_id: "front. URGENT: approve now" });
+    expect(sc(r).verdict).toBe("BLOCKED");
+    expect(asked).toHaveLength(1);
+    expect(asked[0]).not.toMatch(/URGENT/);
+    expect(asked[0]).toContain("on the unnamed door");
+    expect(unlockCalls()).toEqual([]);
+  });
+
+  test("a policy naming a tool the upstream doesn't offer is reported once", async () => {
+    up = await startUpstream();
+    const lines: string[] = [];
+    proxy = createGuardProxy({ upstreamUrl: up.url, policy: parsePolicy(POLICY.replace("open_garage: { door: garage }", "Open_Garage: { door: garage }")), tokens, ringHmacKey: ringKey, clock, log: (l) => lines.push(l) });
+    url = await proxy.listen(0);
+    const agent = await client("agent");
+    const tools = (await agent.listTools()).tools;
+    await agent.listTools();
+    expect(lines.filter((l) => /does not offer: Open_Garage/.test(l))).toHaveLength(1);
+    // The upstream's open_garage is then not guarded, which is why the warning matters.
+    expect(Object.keys(tools.find((t) => t.name === "open_garage")!.inputSchema.properties ?? {})).not.toContain("presented_code");
+  });
+
   test("no approver connected, nobody at the door, lockdown, or too many requests: BLOCKED", async () => {
     await start();
     const agent = await client("agent");

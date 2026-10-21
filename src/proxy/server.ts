@@ -108,6 +108,7 @@ export function createGuardProxy(opts: GuardProxyOptions) {
   const sessionMax = opts.sessionMax ?? 50;
   const sessionIdleMs = opts.sessionIdleMs ?? 30 * 60_000;
   const seenWebhooks = new Set<string>();
+  let warnedMissing = false;
 
   // ---------------- upstream ----------------
 
@@ -149,6 +150,11 @@ export function createGuardProxy(opts: GuardProxyOptions) {
       if (!cursor) break;
     }
     s.tools = all;
+    const missing = Object.keys(policy.physical).filter((name) => !all.some((t) => t.name === name));
+    if (missing.length && !warnedMissing) {
+      warnedMissing = true;
+      log(`policy lists physical tools the upstream does not offer: ${missing.join(", ")} (names are case-sensitive)`);
+    }
     return all;
   }
 

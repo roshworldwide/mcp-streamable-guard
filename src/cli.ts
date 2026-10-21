@@ -27,6 +27,7 @@ function tokens(stateDir: string): { tokens: Tokens; file: string } {
     ring_hmac_key: process.env.GUARD_RING_HMAC_KEY || saved.ring_hmac_key || gen(),
   };
   fs.writeFileSync(file, JSON.stringify(t, null, 2), { mode: 0o600 });
+  fs.chmodSync(file, 0o600); // also when the file already existed with wider permissions
   return { tokens: t, file };
 }
 
