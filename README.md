@@ -4,6 +4,14 @@ A deterministic guard for MCP tools that touch the physical world. Put it in fro
 
 It came out of [HomePulse](https://github.com/roshworldwide/homepulse), an Alexa+ MCP server for family caregivers.
 
+## Install
+
+Node.js 22 or newer. The package is not on npm yet; install it from GitHub (it builds on install):
+
+```bash
+npm install github:roshworldwide/mcp-streamable-guard
+```
+
 ## The idea
 
 An agent may ask for anything. The effect only runs when a pure function of 14 yes/no inputs says allow. Every input is read from **server state** (a passes table, approvals, the clock, home mode, an event log), never from the agent's words. Free-text fields such as `reason` are logged and shown, never used to decide.
@@ -97,7 +105,16 @@ Tokens come from `GUARD_AGENT_TOKEN`, `GUARD_HOMEOWNER_TOKEN`, `GUARD_CAREGIVER_
 Run the example story (a real agent client, the owner's phone answering elicitation, SmartLock Co untouched):
 
 ```bash
-npm run demo:proxy    # from the HomePulse repo root
+git clone https://github.com/roshworldwide/mcp-streamable-guard && cd mcp-streamable-guard
+npm ci
+npm run demo        # SmartLock Co, the proxy, an agent client and the owner's phone; exits non-zero on any surprise
+```
+
+Or run the pieces yourself:
+
+```bash
+npm run smartlock   # SmartLock Co on http://127.0.0.1:9000/mcp
+npm run proxy -- --upstream http://127.0.0.1:9000/mcp --policy examples/smartlock-co/policy.yaml
 ```
 
 Limits: presence is per house, not per door; requests the upstream server sends to its client (elicitation, sampling) and its list-changed notifications are not forwarded; state is per process, so run one proxy per lock.
@@ -113,9 +130,13 @@ await proxy.listen(8790);
 ## Tests
 
 ```bash
-npm test   # includes the 16,384-case exhaustive test and fast-check property tests
+npm test             # includes the 16,384-case exhaustive test and fast-check property tests
+npm run typecheck    # the library, the tests and the examples
+npm run build        # dist/
 ```
+
+CI runs all three, plus the SmartLock Co demo, on Node.js 22 and 24.
 
 ## Licence
 
-MIT
+MIT. See [LICENSE](LICENSE).
