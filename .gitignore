@@ -1,0 +1,7 @@
+node_modules/
+dist/
+coverage/
+# The proxy's default state directory: signing keys, tokens and the audit log.
+.guard/
+*.log
+.DS_Store

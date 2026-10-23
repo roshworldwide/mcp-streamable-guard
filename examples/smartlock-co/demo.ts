@@ -1,7 +1,7 @@
 /**
  * The guard in front of a server that knows nothing about it.
  *
- *   npm run demo:proxy        (from the HomePulse repo root)
+ *   npm run demo
  *
  * Starts "SmartLock Co" (an ordinary MCP lock server), puts the guard proxy in
  * front of it with the 10-line policy.yaml, and plays a short story through a

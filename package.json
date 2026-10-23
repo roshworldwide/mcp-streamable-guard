@@ -13,36 +13,36 @@
     "proxy",
     "smart-home"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roshworldwide/mcp-streamable-guard.git"
+  },
+  "homepage": "https://github.com/roshworldwide/mcp-streamable-guard#readme",
+  "bugs": "https://github.com/roshworldwide/mcp-streamable-guard/issues",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "homepulse-source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
     "./policy": {
-      "homepulse-source": "./src/policy.ts",
       "types": "./dist/policy.d.ts",
       "default": "./dist/policy.js"
     },
     "./spec": {
-      "homepulse-source": "./src/spec.ts",
       "types": "./dist/spec.d.ts",
       "default": "./dist/spec.js"
     },
     "./inputs": {
-      "homepulse-source": "./src/inputs.ts",
       "types": "./dist/inputs.d.ts",
       "default": "./dist/inputs.js"
     },
     "./approvals": {
-      "homepulse-source": "./src/approvals.ts",
       "types": "./dist/approvals.d.ts",
       "default": "./dist/approvals.js"
     },
     "./proxy": {
-      "homepulse-source": "./src/proxy/index.ts",
       "types": "./dist/proxy/index.d.ts",
       "default": "./dist/proxy/index.js"
     }
@@ -50,19 +50,24 @@
   "files": [
     "dist",
     "src",
-    "examples",
     "README.md",
     "LICENSE"
   ],
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "test": "vitest run --root ../.. packages/guard"
-  },
-  "engines": {
-    "node": ">=20"
-  },
   "bin": {
     "mcp-streamable-guard": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.examples.json",
+    "test": "vitest run",
+    "test:exhaustive": "vitest run test/exhaustive.test.ts",
+    "demo": "tsx examples/smartlock-co/demo.ts",
+    "smartlock": "tsx examples/smartlock-co/server.ts",
+    "proxy": "tsx src/cli.ts proxy"
+  },
+  "engines": {
+    "node": ">=22"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "1.32.1",
@@ -71,6 +76,11 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6"
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.20.5",
+    "fast-check": "^4.10.2",
+    "tsx": "^4.23.15",
+    "typescript": "^5.9.3",
+    "vitest": "^5.0.5"
   }
 }
